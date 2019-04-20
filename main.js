@@ -12,10 +12,21 @@ getData().then((data) => {
   graphData(data.data);
 });
 
-const width = 500;
+const width = 1000;
 const height = 500;
+const padding = 50;
 
 function graphData(data) {
+  const xScale = d3
+    .scaleLinear()
+    .domain([0, width])
+    .range([padding, width - padding]);
+
+  const yScale = d3
+    .scaleLinear()
+    .domain([0, d3.max(data, (d) => d[1])])
+    .range([padding, height - padding]);
+
   const svg = d3
     .select("body")
     .append("svg")
@@ -27,11 +38,9 @@ function graphData(data) {
     .data(data)
     .enter()
     .append("rect")
-    .attr("x", (d) => {
-      return Math.floor(Date.parse(d[0]) / 86400000);
-    })
-    .attr("y", (d) => height - d[1])
-    .attr("width", 5)
-    .attr("height", (d) => d[1])
+    .attr("x", (d, i) => i * 2)
+    .attr("y", (d) => height - d[1] / 50)
+    .attr("width", 2)
+    .attr("height", (d) => yScale(d[1]))
     .attr("fill", "blue");
 }
